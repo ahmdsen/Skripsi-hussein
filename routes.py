@@ -8,7 +8,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template('home.html')
+    if current_user.is_authenticated:
+        return render_template('home.html')
+    else:
+        form = LoginForm()
+        return render_template('login.html',form=form, remember=form.remember.data)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
