@@ -19,7 +19,7 @@
 
 <div class="login-container">
     <h2>Login</h2>
-    <form method="POST" action="">
+    <form method="POST" action="{{ url_for('login') }}">
         {{ form.hidden_tag() }}
         <p>
             {{ form.email.label }}<br>
@@ -35,5 +35,9 @@
         </p>
         <p><input type="submit" value="Login"></p>
     </form>
+    <p>
+        Don't have an account? 
+        <a href="{{ url_for('register') }}" class="btn btn-secondary">Register</a>
+    </p>
 </div>
 {% endblock %}

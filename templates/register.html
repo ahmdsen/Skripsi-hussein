@@ -1,28 +1,47 @@
 {% extends "base.html" %}
 {% block content %}
+<style>
+    body {
+        background-image: url("{{ url_for('static', filename='images/pekayon_wallpaper.jpeg') }}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+    .register-container {
+        background-color: rgba(255, 255, 255, 0.8); /* Optional: Add a white background with some transparency */
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 400px;
+        margin: auto;
+        margin-top: 10%;
+    }
+</style>
+
+<div class="register-container">
     <h2>Register</h2>
-    <form method="POST" action="">
+    <form method="POST" action="{{ url_for('register') }}">
         {{ form.hidden_tag() }}
         <p>
             {{ form.username.label }}<br>
             {{ form.username(size=32) }}<br>
-            {{ form.username.errors }}
         </p>
         <p>
             {{ form.email.label }}<br>
             {{ form.email(size=32) }}<br>
-            {{ form.email.errors }}
         </p>
         <p>
             {{ form.password.label }}<br>
             {{ form.password(size=32) }}<br>
-            {{ form.password.errors }}
         </p>
         <p>
             {{ form.confirm_password.label }}<br>
             {{ form.confirm_password(size=32) }}<br>
-            {{ form.confirm_password.errors }}
+        </p>
+        <p>
+            {{ form.nama_lengkap.label }}<br>
+            {{ form.nama_lengkap(size=32) }}<br>
         </p>
         <p><input type="submit" value="Register"></p>
     </form>
+</div>
 {% endblock %}
