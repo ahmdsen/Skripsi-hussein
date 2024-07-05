@@ -1,6 +1,6 @@
 from flask import render_template, url_for, flash, redirect, request
 from app import app, db
-from models import User, Role
+from models import User
 from forms import RegistrationForm, LoginForm
 from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -20,13 +20,18 @@ def register():
         return redirect(url_for('home'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        hashed_password = generate_password_hash(form.password.data, method='sha256')
-        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
-        db.session.add(user)
-        db.session.commit()
-        flash('Your account has been created!', 'success')
-        return redirect(url_for('login'))
+        existing_user = User.query.filter_by(email=form.email.data).first()
+        if existing_user:
+            flash('Email already registered. Please use a different email.', 'danger')
+        else:
+            hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
+            user = User(username=form.username.data, email=form.email.data, password=hashed_password, nama_lengkap=form.nama_lengkap.data)
+            db.session.add(user)
+            db.session.commit()
+            flash('Your account has been created!', 'success')
+            return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -53,9 +58,3 @@ def logout():
 def users():
     users = User.query.all()
     return render_template('users.html', users=users)
-
-@app.route('/roles')
-@login_required
-def roles():
-    roles = Role.query.all()
-    return render_template('roles.html', roles=roles)
