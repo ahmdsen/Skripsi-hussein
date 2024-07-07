@@ -8,10 +8,10 @@ def load_user(user_id):
 class User(db.Model, UserMixin):
     __tablename__ = 'pengguna'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    username = db.Column(db.String(20), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(60), nullable=False)
-    nama_lengkap = db.Column(db.String(100), nullable=False)
+    username = db.Column(db.String(80), nullable=False, unique=True)
+    password = db.Column(db.String(200), nullable=False)
+    email = db.Column(db.String(120), nullable=False, unique=True)
+    nama_lengkap = db.Column(db.String(120), nullable=False)
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.nama_lengkap}')"
