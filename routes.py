@@ -58,5 +58,20 @@ def logout():
 @app.route('/users')
 @login_required
 def users():
-    users = User.query.all()
-    return render_template('users.html', users=users)
+    return render_template('users.html', title='Users')
+
+@app.route('/citizens')
+@login_required
+def citizens():
+    return render_template('citizens.html', title='Citizens')
+
+@app.route('/assistance')
+@login_required
+def assistance():
+    return render_template('assistance.html', title='Assistance')
+
+@app.route('/feedback')
+@login_required
+def feedback():
+    return render_template('feedback.html', title='Feedback')
+
