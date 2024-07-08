@@ -7,7 +7,6 @@ Citizens - Warga Bansos App
 {% block content %}
 
 
-
 {% block styles %}
 <style>
     .btn {
@@ -23,6 +22,8 @@ Citizens - Warga Bansos App
         cursor: pointer;
         border: 1px solid transparent;
         border-radius: 4px;
+        text-decoration: none;
+        margin-right: 5px;
     }
 
     .btn-primary {
@@ -66,24 +67,47 @@ Citizens - Warga Bansos App
     .table tr:nth-child(even) {
         background-color: #f2f2f2;
     }
+
+    .actions {
+        white-space: nowrap;
+    }
+
+    .delete-form {
+        display: inline;
+    }
+
+    .delete-form button {
+        display: inline-block;
+        /* padding: 6px 12px; */
+        margin-bottom: 0;
+        font-size: 14px;
+        font-weight: normal;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        cursor: pointer;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        text-decoration: none;
+        background-color: #d9534f;
+        border-color: #d43f3a;
+        color: #fff;
+    }
 </style>
 {% endblock %}
 
 <h1>Citizens</h1>
-<a href="{{ url_for('add_citizen') }}" class="btn btn-primary" style="text-decoration: none;">Tambah Warga</a>
+<a href="{{ url_for('add_citizen') }}" class="btn btn-primary">Add New Citizen</a>
 <table class="table">
     <thead>
         <tr>
             <th>ID</th>
             <th>Nama</th>
-            <th>Alamat</th>
             <th>Pendapatan</th>
             <th>Status Rumah Tinggal</th>
             <th>Status Pekerjaan</th>
-            <th>Kondisi Rumah</th>
-            <th>Jumlah Anggota Keluarga</th>
             <th>Status Bantuan</th>
-            <th>Informasi Tambahan</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -92,17 +116,13 @@ Citizens - Warga Bansos App
         <tr>
             <td>{{ citizen.id }}</td>
             <td>{{ citizen.nama }}</td>
-            <td>{{ citizen.alamat }}</td>
             <td>{{ citizen.pendapatan }}</td>
             <td>{{ citizen.status_rumah_tinggal }}</td>
             <td>{{ citizen.status_pekerjaan }}</td>
-            <td>{{ citizen.kondisi_rumah }}</td>
-            <td>{{ citizen.jumlah_anggota_keluarga }}</td>
             <td>{{ citizen.status_bantuan }}</td>
-            <td>{{ citizen.informasi_tambahan }}</td>
-            <td>
+            <td class="actions">
                 <a href="{{ url_for('edit_citizen', id=citizen.id) }}" class="btn btn-warning">Edit</a>
-                <form action="{{ url_for('delete_citizen', id=citizen.id) }}" method="POST" style="display:inline;">
+                <form action="{{ url_for('delete_citizen', id=citizen.id) }}" method="POST" class="delete-form">
                     <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
             </td>
