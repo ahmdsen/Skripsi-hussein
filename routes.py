@@ -7,10 +7,9 @@ from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 
 @app.route('/')
-@app.route('/home')
 def home():
     if current_user.is_authenticated:
-        return render_template('home.html')
+        return render_template('home.html', title='Home')
     else:
         form = LoginForm()
         return render_template('login.html',form=form, remember=form.remember.data)
