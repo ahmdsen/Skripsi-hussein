@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Citizen - Warga Bansos App
+{% endblock %}
+
+{% block content %}
+<h1>Edit Citizen</h1>
+<form method="POST" action="{{ url_for('edit_citizen', id=citizen.id) }}">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.nama.label }}<br>
+        {{ form.nama(size=32) }}<br>
+        {{ form.nama.errors }}
+    </p>
+    <p>
+        {{ form.alamat.label }}<br>
+        {{ form.alamat(size=32) }}<br>
+        {{ form.alamat.errors }}
+    </p>
+    <p>
+        {{ form.pendapatan.label }}<br>
+        {{ form.pendapatan() }}<br>
+        {{ form.pendapatan.errors }}
+    </p>
+    <p>
+        {{ form.status_rumah_tinggal.label }}<br>
+        {{ form.status_rumah_tinggal(size=32) }}<br>
+        {{ form.status_rumah_tinggal.errors }}
+    </p>
+    <p>
+        {{ form.status_pekerjaan.label }}<br>
+        {{ form.status_pekerjaan(size=32) }}<br>
+        {{ form.status_pekerjaan.errors }}
+    </p>
+    <p>
+        {{ form.kondisi_rumah.label }}<br>
+        {{ form.kondisi_rumah(size=32) }}<br>
+        {{ form.kondisi_rumah.errors }}
+    </p>
+    <p>
+        {{ form.jumlah_anggota_keluarga.label }}<br>
+        {{ form.jumlah_anggota_keluarga(size=32) }}<br>
+        {{ form.jumlah_anggota_keluarga.errors }}
+    </p>
+    <p>
+        {{ form.status_bantuan.label }}<br>
+        {{ form.status_bantuan(size=32) }}<br>
+        {{ form.status_bantuan.errors }}
+    </p>
+    <p>
+        {{ form.informasi_tambahan.label }}<br>
+        {{ form.informasi_tambahan(cols=32, rows=4) }}<br>
+        {{ form.informasi_tambahan.errors }}
+    </p>
+    <p><button type="submit">Submit</button></p>
+</form>
+{% endblock %}

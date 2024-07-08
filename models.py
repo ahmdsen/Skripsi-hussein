@@ -15,3 +15,16 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.nama_lengkap}')"
+
+class Citizen(db.Model):
+    __tablename__ = 'citizen'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nama = db.Column(db.String(255), nullable=False)
+    alamat = db.Column(db.String(255), nullable=False)
+    pendapatan = db.Column(db.BigInteger, nullable=False)
+    status_rumah_tinggal = db.Column(db.String(255), nullable=False)
+    status_pekerjaan = db.Column(db.String(255), nullable=False)
+    kondisi_rumah = db.Column(db.String(255), nullable=False)
+    jumlah_anggota_keluarga = db.Column(db.String(255), nullable=False)
+    status_bantuan = db.Column(db.String(255), nullable=False)
+    informasi_tambahan = db.Column(db.Text, nullable=True)

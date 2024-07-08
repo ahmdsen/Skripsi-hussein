@@ -1,6 +1,7 @@
 from flask import render_template, url_for, flash, redirect, request
 from app import app, db
-from models import User
+from forms import CitizenForm
+from models import User, Citizen
 from forms import RegistrationForm, LoginForm
 from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -60,10 +61,58 @@ def logout():
 def users():
     return render_template('users.html', title='Users')
 
-@app.route('/citizens')
-@login_required
+@app.route('/citizens', methods=['GET', 'POST'])
 def citizens():
-    return render_template('citizens.html', title='Citizens')
+    citizens = Citizen.query.all()
+    return render_template('citizens/citizens.html', citizens=citizens)
+
+@app.route('/citizen/add', methods=['GET', 'POST'])
+def add_citizen():
+    form = CitizenForm()
+    if form.validate_on_submit():
+        citizen = Citizen(
+            nama=form.nama.data,
+            alamat=form.alamat.data,
+            pendapatan=form.pendapatan.data,
+            status_rumah_tinggal=form.status_rumah_tinggal.data,
+            status_pekerjaan=form.status_pekerjaan.data,
+            kondisi_rumah=form.kondisi_rumah.data,
+            jumlah_anggota_keluarga=form.jumlah_anggota_keluarga.data,
+            status_bantuan=form.status_bantuan.data,
+            informasi_tambahan=form.informasi_tambahan.data
+        )
+        db.session.add(citizen)
+        db.session.commit()
+        flash('Citizen added successfully!', 'success')
+        return redirect(url_for('citizens'))
+    return render_template('citizens/add_citizen.html', form=form)
+
+@app.route('/citizen/edit/<int:id>', methods=['GET', 'POST'])
+def edit_citizen(id):
+    citizen = Citizen.query.get_or_404(id)
+    form = CitizenForm(obj=citizen)
+    if form.validate_on_submit():
+        citizen.nama = form.nama.data
+        citizen.alamat = form.alamat.data
+        citizen.pendapatan = form.pendapatan.data
+        citizen.status_rumah_tinggal = form.status_rumah_tinggal.data
+        citizen.status_pekerjaan = form.status_pekerjaan.data
+        citizen.kondisi_rumah = form.kondisi_rumah.data
+        citizen.jumlah_anggota_keluarga = form.jumlah_anggota_keluarga.data
+        citizen.status_bantuan = form.status_bantuan.data
+        citizen.informasi_tambahan = form.informasi_tambahan.data
+        db.session.commit()
+        flash('Citizen updated successfully!', 'success')
+        return redirect(url_for('citizens'))
+    return render_template('citizens/edit_citizen.html', form=form)
+
+@app.route('/citizen/delete/<int:id>', methods=['POST'])
+def delete_citizen(id):
+    citizen = Citizen.query.get_or_404(id)
+    db.session.delete(citizen)
+    db.session.commit()
+    flash('Citizen deleted successfully!', 'success')
+    return redirect(url_for('citizens'))
 
 @app.route('/assistance')
 @login_required

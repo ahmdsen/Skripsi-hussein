@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}
+Citizens - Warga Bansos App
+{% endblock %}
+
+{% block content %}
+
+
+
+{% block styles %}
+<style>
+    .btn {
+        display: inline-block;
+        padding: 6px 12px;
+        margin-bottom: 0;
+        font-size: 14px;
+        font-weight: normal;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        cursor: pointer;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+
+    .btn-primary {
+        color: #fff;
+        background-color: #337ab7;
+        border-color: #2e6da4;
+    }
+
+    .btn-warning {
+        color: #fff;
+        background-color: #f0ad4e;
+        border-color: #eea236;
+    }
+
+    .btn-danger {
+        color: #fff;
+        background-color: #d9534f;
+        border-color: #d43f3a;
+    }
+
+    .table {
+        width: 100%;
+        margin-bottom: 20px;
+        border-collapse: collapse;
+    }
+
+    .table th,
+    .table td {
+        padding: 8px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border-top: 1px solid #ddd;
+    }
+
+    .table th {
+        background-color: #f9f9f9;
+        text-align: left;
+        font-weight: bold;
+    }
+
+    .table tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+</style>
+{% endblock %}
+
+<h1>Citizens</h1>
+<a href="{{ url_for('add_citizen') }}" class="btn btn-primary" style="text-decoration: none;">Tambah Warga</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nama</th>
+            <th>Alamat</th>
+            <th>Pendapatan</th>
+            <th>Status Rumah Tinggal</th>
+            <th>Status Pekerjaan</th>
+            <th>Kondisi Rumah</th>
+            <th>Jumlah Anggota Keluarga</th>
+            <th>Status Bantuan</th>
+            <th>Informasi Tambahan</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for citizen in citizens %}
+        <tr>
+            <td>{{ citizen.id }}</td>
+            <td>{{ citizen.nama }}</td>
+            <td>{{ citizen.alamat }}</td>
+            <td>{{ citizen.pendapatan }}</td>
+            <td>{{ citizen.status_rumah_tinggal }}</td>
+            <td>{{ citizen.status_pekerjaan }}</td>
+            <td>{{ citizen.kondisi_rumah }}</td>
+            <td>{{ citizen.jumlah_anggota_keluarga }}</td>
+            <td>{{ citizen.status_bantuan }}</td>
+            <td>{{ citizen.informasi_tambahan }}</td>
+            <td>
+                <a href="{{ url_for('edit_citizen', id=citizen.id) }}" class="btn btn-warning">Edit</a>
+                <form action="{{ url_for('delete_citizen', id=citizen.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
