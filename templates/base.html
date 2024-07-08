@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }}</title>
+    <title>{% block title %}{{ title }}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <style>
         body {
@@ -51,6 +51,7 @@
             color: #333;
         }
         .content {
+            margin-left: 250px;
             padding: 20px;
             flex: 1;
             overflow-y: auto;
@@ -93,6 +94,7 @@
                     {% endfor %}
                 {% endif %}
             {% endwith %}
+            {% block content %}{% endblock %}
         </div>
     </div>
     {% else %}
@@ -104,7 +106,6 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        {% block content %}{% endblock %}
     </div>
     {% endif %}
 </body>
