@@ -51,6 +51,7 @@
             color: #333;
         }
         .content {
+            margin-left: 260px;
             flex: 1;
             overflow-y: auto;
         }
@@ -92,10 +93,11 @@
                     {% endfor %}
                 {% endif %}
             {% endwith %}
+            {% block content %}{% endblock %}
         </div>
     </div>
     {% else %}
-    <div class="content">
+    <div class="notauthenticated">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -103,7 +105,7 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        {% block content %}{% endblock %}
+        {% block notauthenticated %}{% endblock %}
     </div>
     {% endif %}
 </body>
