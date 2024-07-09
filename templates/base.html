@@ -11,22 +11,37 @@
             font-family: Arial, sans-serif;
         }
         header {
-            width: 100%;
-            background-color: #333;
-            color: white;
-            padding: 10px;
+            position: fixed;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            position: fixed;
             top: 0;
+            width: 95%;
+            background: linear-gradient(90deg, #333, #555);
+            color: white;
             z-index: 1000;
+            padding: 10px 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         header img {
-            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+        }
+        header a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            background-color: #444;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            margin: 0 0 0 -40px;
+        }
+        header a:hover {
+            background-color: #666;
         }
         .container {
             display: flex;
+            margin: 0;
             margin-top: 60px; /* Adjust based on the height of the header */
             height: calc(100vh - 60px); /* Adjust based on the height of the header */
         }
@@ -38,6 +53,7 @@
             position: fixed;
             top: 60px; /* Adjust based on the height of the header */
             bottom: 0;
+            text-align: center;
         }
         .sidebar ul {
             list-style: none;
@@ -49,6 +65,13 @@
         .sidebar ul li a {
             text-decoration: none;
             color: #333;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .sidebar ul li a:hover, .sidebar ul li a.active {
+            background-color: #333;
+            color: white;
         }
         .content {
             margin-left: 260px;
@@ -68,21 +91,17 @@
 <body>
     {% if current_user.is_authenticated %}
     <header>
-        <img src="{{ url_for('static', filename='images/logo.jpeg') }}" alt="Logo">
-        <nav>
-            <ul>
-                <li><a href="{{ url_for('logout') }}">Logout</a></li>
-            </ul>
-        </nav>
+        <img src="{{ url_for('static', filename='images/logo-bansos.png') }}" alt="Logo">
+        <a href="{{ url_for('logout') }}">Logout</a>
     </header>
     <div class="container">
         <div class="sidebar">
             <ul>
-                <li><a href="{{ url_for('home') }}">Beranda</a></li>
-                <li><a href="{{ url_for('users') }}">Pengguna</a></li>
-                <li><a href="{{ url_for('citizens') }}">Warga</a></li>
-                <li><a href="{{ url_for('assistance') }}">Bantuan</a></li>
-                <li><a href="{{ url_for('feedback') }}">Feedback</a></li>
+                <li><a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Beranda</a></li>
+                <li><a href="{{ url_for('users') }}" class="{% if request.endpoint == 'users' %}active{% endif %}">Pengguna</a></li>
+                <li><a href="{{ url_for('citizens') }}" class="{% if request.endpoint == 'citizens' %}active{% endif %}">Warga</a></li>
+                <li><a href="{{ url_for('assistance') }}" class="{% if request.endpoint == 'assistance' %}active{% endif %}">Bantuan</a></li>
+                <li><a href="{{ url_for('feedback') }}" class="{% if request.endpoint == 'feedback' %}active{% endif %}">Feedback</a></li>
             </ul>
         </div>
         <div class="content">
