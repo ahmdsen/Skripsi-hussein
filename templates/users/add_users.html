@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}
+Add User - Your App Name
+{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h1>Add User</h1>
+    <form method="POST" action="{{ url_for('add_user') }}">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.username.label }}
+            {{ form.username(size=32) }}
+            {% if form.username.errors %}
+            <div class="errors">{{ form.username.errors[0] }}</div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.email.label }}
+            {{ form.email(size=32) }}
+            {% if form.email.errors %}
+            <div class="errors">{{ form.email.errors[0] }}</div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.password.label }}
+            {{ form.password(size=32) }}
+            {% if form.password.errors %}
+            <div class="errors">{{ form.password.errors[0] }}</div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.nama_lengkap.label }}
+            {{ form.nama_lengkap(size=32) }}
+            {% if form.nama_lengkap.errors %}
+            <div class="errors">{{ form.nama_lengkap.errors[0] }}</div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn-submit">Submit</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

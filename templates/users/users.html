@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}
+users - Pengguna Bansos App
+{% endblock %}
+
+{% block content %}
+
+
+{% block styles %}
+<style>
+    .btn {
+        display: inline-block;
+        padding: 6px 12px;
+        margin-bottom: 0;
+        font-size: 14px;
+        font-weight: normal;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        cursor: pointer;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        text-decoration: none;
+        margin-right: 5px;
+    }
+
+    .btn-primary {
+        color: #fff;
+        background-color: #333;
+        border-color: #333;
+    }
+
+    .btn-warning {
+        color: #fff;
+        background-color: #f0ad4e;
+        border-color: #eea236;
+    }
+
+    .btn-danger {
+        color: #fff;
+        background-color: #d9534f;
+        border-color: #d43f3a;
+    }
+
+    .table {
+        width: 100%;
+        margin-bottom: 20px;
+        border-collapse: collapse;
+        border: 1px solid #ddd;
+    }
+
+    .table th,
+    .table td {
+        padding: 12px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border: 1px solid #ddd;
+    }
+
+    .table th {
+        background-color: #333;
+        color: #fff;
+        text-align: left;
+        font-weight: bold;
+    }
+
+    .table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .actions {
+        white-space: nowrap;
+    }
+
+    .delete-form {
+        display: inline;
+    }
+
+    .delete-form button {
+        display: inline-block;
+        margin-bottom: 0;
+        font-size: 14px;
+        font-weight: normal;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        cursor: pointer;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        text-decoration: none;
+        background-color: #d9534f;
+        border-color: #d43f3a;
+        color: #fff;
+    }
+</style>
+{% endblock %}
+
+<h1>Pengguna</h1>
+<a href="{{ url_for('add_user') }}" class="btn btn-primary">Add New user</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Full Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.nama_lengkap }}</td>
+            <td class="actions">
+                <a href="{{ url_for('edit_user', id=user.id) }}" class="btn btn-warning">Edit</a>
+                <form action="{{ url_for('delete_user', id=user.id) }}" method="POST" class="delete-form">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
