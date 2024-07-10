@@ -123,3 +123,53 @@ def assistance():
 def feedback():
     return render_template('feedback.html', title='Feedback')
 
+from flask import request
+
+@app.route('/user/add_users', methods=['GET', 'POST'])
+@login_required  # Ensure only logged-in users can access this route
+def add_user():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        existing_user = User.query.filter_by(email=form.email.data).first()
+        if existing_user:
+            flash('Email already registered. Please use a different email.', 'danger')
+        else:
+            hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
+            user = User(username=form.username.data, email=form.email.data, password=hashed_password, nama_lengkap=form.nama_lengkap.data)
+            db.session.add(user)
+            db.session.commit()
+            flash('User added successfully!', 'success')
+            return redirect(url_for('users'))  # Redirect to a route where all users are listed
+    return render_template('add_user.html', title='Add User', form=form)
+
+@app.route('/user/<int:id>')
+@login_required
+def view_user(id):
+    user = User.query.get_or_404(id)
+    return render_template('view_user.html', title='View User', user=user)
+
+@app.route('/user/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_user(id):
+    user = User.query.get_or_404(id)
+    form = RegistrationForm(obj=user)
+    if form.validate_on_submit():
+        user.username = form.username.data
+        user.email = form.email.data
+        user.nama_lengkap = form.nama_lengkap.data
+        if form.password.data:  # Only update password if a new one is provided
+            user.password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
+        db.session.commit()
+        flash('User updated successfully!', 'success')
+        return redirect(url_for('users'))  # Redirect to a route where all users are listed
+    return render_template('edit_user.html', title='Edit User', form=form)
+
+@app.route('/user/delete/<int:id>', methods=['POST'])
+@login_required
+def delete_user(id):
+    user = User.query.get_or_404(id)
+    db.session.delete(user)
+    db.session.commit()
+    flash('User deleted successfully!', 'success')
+    return redirect(url_for('users'))  # Redirect to a route where all users are listed
+
