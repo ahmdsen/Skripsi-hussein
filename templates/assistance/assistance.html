@@ -1,10 +1,168 @@
 {% extends "base.html" %}
+
+{% block title %}
+Add Users - Warga Bansos App
+{% endblock %}
+
 {% block content %}
-    <h1>Welcome to the Bantuan Page</h1>
-    <p>This is a simple Flask application with user authentication and role management.</p>
-    {% if current_user.is_authenticated %}
-        <p>Hello, {{ current_user.username }}!</p>
-    {% else %}
-        <p>Please <a href="{{ url_for('login') }}">login</a> or <a href="{{ url_for('register') }}">register</a>.</p>
-    {% endif %}
+{% block styles %}
+<style>
+    .btn {
+        display: inline-block;
+        padding: 6px 12px;
+        margin-bottom: 0;
+        font-size: 14px;
+        font-weight: normal;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        cursor: pointer;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        text-decoration: none;
+        margin-right: 5px;
+    }
+
+    .btn-primary {
+        color: #fff;
+        background-color: #333;
+        border-color: #333;
+    }
+
+    .btn-warning {
+        color: #fff;
+        background-color: #f0ad4e;
+        border-color: #eea236;
+    }
+
+    .btn-danger {
+        color: #fff;
+        background-color: #d9534f;
+        border-color: #d43f3a;
+    }
+
+    .table {
+        width: 100%;
+        margin-bottom: 20px;
+        border-collapse: collapse;
+        border: 1px solid #ddd;
+    }
+
+    .table th,
+    .table td {
+        padding: 12px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border: 1px solid #ddd;
+    }
+
+    .table th {
+        background-color: #333;
+        color: #fff;
+        text-align: left;
+        font-weight: bold;
+    }
+
+    .table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .actions {
+        white-space: nowrap;
+    }
+
+    .delete-form {
+        display: inline;
+    }
+
+    .delete-form button {
+        display: inline-block;
+        margin-bottom: 0;
+        font-size: 14px;
+        font-weight: normal;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        cursor: pointer;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        text-decoration: none;
+        background-color: #d9534f;
+        border-color: #d43f3a;
+        color: #fff;
+    }
+
+    .btn-submit {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #333;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .btn-submit:hover {
+        background-color: #555;
+    }
+</style>
+{% endblock %}
+
+<h1>Upload CSV File</h1>
+<form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_file') }}">
+    <div class="form-group">
+        <input class="btn-submit" type="file" name="file" accept=".csv">
+        <button type="submit" class="btn-submit">Submit</button>
+    </div>
+</form>
+
+{% if table_data %}
+<h2>Uploaded Data</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Nama</th>
+            <th>Jumlah Anggota</th>
+            <th>Status Rumah Tinggal</th>
+            <th>Status Pekerjaan</th>
+            <th>Pendapatan Gaji</th>
+            <th>Kondisi Rumah</th>
+            <th>Kelurahan</th>
+            <th>Bansos</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in table_data %}
+        <tr>
+            <td>{{ row['nama'] }}</td>
+            <td>{{ row['jumlah_anggota'] }}</td>
+            <td>{{ row['status_rumah_tinggal'] }}</td>
+            <td>{{ row['status_pekerjaan'] }}</td>
+            <td>{{ row['pendapatan_gaji'] }}</td>
+            <td>{{ row['kondisi_rumah'] }}</td>
+            <td>{{ row['kelurahan'] }}</td>
+            <td>{{ row['bansos'] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<div class="alert alert-{{ category }}">{{ message }}</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
 {% endblock %}

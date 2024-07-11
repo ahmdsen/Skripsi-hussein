@@ -9,6 +9,11 @@ from models import User, Citizen
 from forms import RegistrationForm, LoginForm
 from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.naive_bayes import CategoricalNB
+from sklearn.metrics import classification_report
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -184,3 +189,33 @@ def delete_user(id):
     flash('User deleted successfully!', 'success')
     return redirect(url_for('users'))  # Redirect to a route where all users are listed
 
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        # Check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part', 'danger')
+            return redirect(request.url)
+        file = request.files['file']
+        # If user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            flash('No selected file', 'danger')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+            flash('File uploaded successfully', 'success')
+            table_data = process_csv_file(file_path)
+            print(table_data)
+            return render_template('assistance/assistance.html', table_data=table_data)
+    return render_template('assistance/assistance.html', table_data=None)
+
+def process_csv_file(file_path):
+    data = []
+    with open(file_path, 'r', newline='', encoding='utf-8-sig') as f:  # Use utf-8-sig for BOM handling
+        reader = csv.DictReader(f, delimiter=';')  # Specify delimiter as semicolon
+        for row in reader:
+            data.append(row)
+    return data
