@@ -1,10 +1,22 @@
+import logging
+import os
+import csv
 from flask import render_template, url_for, flash, redirect, request
 from app import app, db
+from werkzeug.utils import secure_filename
 from forms import CitizenForm
 from models import User, Citizen
 from forms import RegistrationForm, LoginForm
 from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
+
+logging.basicConfig(level=logging.DEBUG)
+
+app.config['UPLOAD_FOLDER'] = 'uploads'
+ALLOWED_EXTENSIONS = {'csv'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/')
 def home():
@@ -89,22 +101,28 @@ def add_citizen():
 
 @app.route('/citizen/edit/<int:id>', methods=['GET', 'POST'])
 def edit_citizen(id):
+    logging.debug(f"Editing citizen with ID: {id}")
     citizen = Citizen.query.get_or_404(id)
     form = CitizenForm(obj=citizen)
     if form.validate_on_submit():
-        citizen.nama = form.nama.data
-        citizen.alamat = form.alamat.data
-        citizen.pendapatan = form.pendapatan.data
-        citizen.status_rumah_tinggal = form.status_rumah_tinggal.data
-        citizen.status_pekerjaan = form.status_pekerjaan.data
-        citizen.kondisi_rumah = form.kondisi_rumah.data
-        citizen.jumlah_anggota_keluarga = form.jumlah_anggota_keluarga.data
-        citizen.status_bantuan = form.status_bantuan.data
-        citizen.informasi_tambahan = form.informasi_tambahan.data
-        db.session.commit()
-        flash('Citizen updated successfully!', 'success')
-        return redirect(url_for('citizens'))
-    return render_template('citizens/edit_citizen.html', form=form)
+        logging.debug("Form validated successfully")
+        try:
+            citizen.nama = form.nama.data
+            citizen.alamat = form.alamat.data
+            citizen.pendapatan = form.pendapatan.data
+            citizen.status_rumah_tinggal = form.status_rumah_tinggal.data
+            citizen.status_pekerjaan = form.status_pekerjaan.data
+            citizen.kondisi_rumah = form.kondisi_rumah.data
+            citizen.jumlah_anggota_keluarga = form.jumlah_anggota_keluarga.data
+            citizen.status_bantuan = form.status_bantuan.data
+            citizen.informasi_tambahan = form.informasi_tambahan.data
+            db.session.commit()
+            flash('Citizen updated successfully!', 'success')
+            return redirect(url_for('citizens'))
+        except Exception as e:
+            logging.error(f"Error updating citizen: {e}")
+            flash('An error occurred while updating the citizen.', 'danger')
+    return render_template('citizens/edit_citizen.html', form=form, citizen=citizen)
 
 @app.route('/citizen/delete/<int:id>', methods=['POST'])
 def delete_citizen(id):
@@ -117,7 +135,7 @@ def delete_citizen(id):
 @app.route('/assistance')
 @login_required
 def assistance():
-    return render_template('assistance.html', title='Assistance')
+    return render_template('assistance/assistance.html', title='Assistance')
 
 @app.route('/feedback')
 @login_required
@@ -139,7 +157,7 @@ def add_user():
             db.session.commit()
             flash('User added successfully!', 'success')
             return redirect(url_for('users'))  # Redirect to a route where all users are listed
-    return render_template('users/add_user.html', title='Add User', form=form)
+    return render_template('users/add_users.html', form=form)
 
 @app.route('/users/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -155,7 +173,7 @@ def edit_user(id):
         db.session.commit()
         flash('User updated successfully!', 'success')
         return redirect(url_for('users'))  # Redirect to a route where all users are listed
-    return render_template('users/edit_user.html', title='Edit User', form=form)
+    return render_template('users/edit_users.html', form=form, user=user)
 
 @app.route('/users/delete/<int:id>', methods=['POST'])
 @login_required

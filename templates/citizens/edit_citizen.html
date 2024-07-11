@@ -1,58 +1,100 @@
 {% extends "base.html" %}
 
 {% block title %}
-Edit Citizen - Warga Bansos App
+Edit Warga - Warga Bansos App
 {% endblock %}
 
 {% block content %}
-<h1>Edit Citizen</h1>
+
+<style>
+    .form-card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 2em;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        max-width: 600px;
+        margin: 2em auto;
+    }
+
+    .form-group {
+        margin-bottom: 1em;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 0.5em;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 0.5em;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .form-group .errors {
+        color: red;
+        font-size: 0.875em;
+        margin-top: 0.25em;
+    }
+
+    .btn-submit {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #333;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .btn-submit:hover {
+        background-color: #555;
+    }
+</style>
+
+
+<div class="form-card">
+<h1>Edit Warga</h1>
 <form method="POST" action="{{ url_for('edit_citizen', id=citizen.id) }}">
     {{ form.hidden_tag() }}
-    <p>
-        {{ form.nama.label }}<br>
-        {{ form.nama(size=32) }}<br>
-        {{ form.nama.errors }}
-    </p>
-    <p>
-        {{ form.alamat.label }}<br>
-        {{ form.alamat(size=32) }}<br>
-        {{ form.alamat.errors }}
-    </p>
-    <p>
-        {{ form.pendapatan.label }}<br>
-        {{ form.pendapatan() }}<br>
-        {{ form.pendapatan.errors }}
-    </p>
-    <p>
-        {{ form.status_rumah_tinggal.label }}<br>
-        {{ form.status_rumah_tinggal(size=32) }}<br>
-        {{ form.status_rumah_tinggal.errors }}
-    </p>
-    <p>
-        {{ form.status_pekerjaan.label }}<br>
-        {{ form.status_pekerjaan(size=32) }}<br>
-        {{ form.status_pekerjaan.errors }}
-    </p>
-    <p>
-        {{ form.kondisi_rumah.label }}<br>
-        {{ form.kondisi_rumah(size=32) }}<br>
-        {{ form.kondisi_rumah.errors }}
-    </p>
-    <p>
-        {{ form.jumlah_anggota_keluarga.label }}<br>
-        {{ form.jumlah_anggota_keluarga(size=32) }}<br>
-        {{ form.jumlah_anggota_keluarga.errors }}
-    </p>
-    <p>
-        {{ form.status_bantuan.label }}<br>
-        {{ form.status_bantuan(size=32) }}<br>
-        {{ form.status_bantuan.errors }}
-    </p>
-    <p>
-        {{ form.informasi_tambahan.label }}<br>
-        {{ form.informasi_tambahan(cols=32, rows=4) }}<br>
-        {{ form.informasi_tambahan.errors }}
-    </p>
-    <p><button type="submit">Submit</button></p>
+    <div class="form-group">
+        {{ form.nama.label }} {{ form.nama }}
+    </div>
+    <div class="form-group">
+        {{ form.alamat.label }} {{ form.alamat }}
+    </div>
+    <div class="form-group">
+        {{ form.pendapatan.label }} {{ form.pendapatan }}
+    </div>
+    <div class="form-group">
+        {{ form.status_rumah_tinggal.label }} {{ form.status_rumah_tinggal }}
+    </div>
+    <div class="form-group">
+        {{ form.status_pekerjaan.label }} {{ form.status_pekerjaan }}
+    </div>
+    <div class="form-group">
+        {{ form.kondisi_rumah.label }} {{ form.kondisi_rumah }}
+    </div>
+    <div class="form-group">
+        {{ form.jumlah_anggota_keluarga.label }} {{ form.jumlah_anggota_keluarga }}
+    </div>
+    <div class="form-group">
+        {{ form.status_bantuan.label }} {{ form.status_bantuan }}
+    </div>
+    <div class="form-group">
+        {{ form.informasi_tambahan.label }} {{ form.informasi_tambahan }}
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn-submit">Submit</button>
+    </div>
 </form>
+</div>
 {% endblock %}

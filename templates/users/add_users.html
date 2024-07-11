@@ -1,12 +1,67 @@
 {% extends "base.html" %}
 
 {% block title %}
-Add User - Your App Name
+Add Users - Warga Bansos App
 {% endblock %}
 
 {% block content %}
+<style>
+    .form-card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 2em;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        max-width: 600px;
+        margin: 2em auto;
+    }
+
+    .form-group {
+        margin-bottom: 1em;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 0.5em;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 0.5em;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .form-group .errors {
+        color: red;
+        font-size: 0.875em;
+        margin-top: 0.25em;
+    }
+
+    .btn-submit {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #333;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .btn-submit:hover {
+        background-color: #555;
+    }
+</style>
+
 <div class="form-card">
-    <h1>Add User</h1>
+    <h1>Tambah Pengguna</h1>
+
     <form method="POST" action="{{ url_for('add_user') }}">
         {{ form.hidden_tag() }}
         <div class="form-group">
