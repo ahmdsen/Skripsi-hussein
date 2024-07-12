@@ -14,6 +14,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.naive_bayes import CategoricalNB
 from sklearn.metrics import classification_report
+from sklearn.impute import SimpleImputer
+import re
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -189,33 +191,80 @@ def delete_user(id):
     flash('User deleted successfully!', 'success')
     return redirect(url_for('users'))  # Redirect to a route where all users are listed
 
-@app.route('/upload', methods=['GET', 'POST'])
-def upload_file():
-    if request.method == 'POST':
-        # Check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part', 'danger')
-            return redirect(request.url)
-        file = request.files['file']
-        # If user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            flash('No selected file', 'danger')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(file_path)
-            flash('File uploaded successfully', 'success')
-            table_data = process_csv_file(file_path)
-            print(table_data)
-            return render_template('assistance/assistance.html', table_data=table_data)
-    return render_template('assistance/assistance.html', table_data=None)
-
 def process_csv_file(file_path):
-    data = []
-    with open(file_path, 'r', newline='', encoding='utf-8-sig') as f:  # Use utf-8-sig for BOM handling
-        reader = csv.DictReader(f, delimiter=';')  # Specify delimiter as semicolon
-        for row in reader:
-            data.append(row)
-    return data
+    df = pd.read_csv(file_path, delimiter=';')
+    
+    # Handle numeric columns with non-numeric characters (e.g., thousand separators)
+    numeric_columns = ['jumlah_anggota', 'pendapatan_gaji']
+    
+    for col in numeric_columns:
+        df[col] = df[col].astype(str).str.replace(r'\D', '').astype(float)  # Convert to string first, then remove non-numeric characters and convert to float
+    
+    # Handle missing values with mean for numeric columns
+    imputer = SimpleImputer(strategy='mean')
+    df[numeric_columns] = imputer.fit_transform(df[numeric_columns])
+    
+    # Handle categorical columns
+    categorical_columns = ['status_rumah_tinggal', 'status_pekerjaan', 'kondisi_rumah', 'kelurahan', 'bansos']
+    
+    # Impute missing values for categorical columns with most frequent value
+    imputer = SimpleImputer(strategy='most_frequent')
+    df[categorical_columns] = imputer.fit_transform(df[categorical_columns])
+    
+    # Encode categorical variables
+    label_encoders = {col: LabelEncoder().fit(df[col]) for col in categorical_columns}
+    for col, encoder in label_encoders.items():
+        df[col] = encoder.transform(df[col])
+    
+    return df, label_encoders
+    
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        flash('No file part', 'danger')
+        return redirect(request.url)
+    
+    file = request.files['file']
+    if file.filename == '':
+        flash('No selected file', 'danger')
+        return redirect(request.url)
+    
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        flash('File uploaded successfully', 'success')
+        
+        # Process uploaded CSV file
+        df, label_encoders = process_csv_file(file_path)
+        X = df[['jumlah_anggota', 'status_rumah_tinggal', 'status_pekerjaan', 'pendapatan_gaji', 'kondisi_rumah', 'kelurahan']]
+        y = df['bansos']
+        
+        # Train Naive Bayes classifier (CategoricalNB for categorical features)
+        model = CategoricalNB()
+        model.fit(X, y)
+        
+        # Example prediction data
+        example_data = {
+            'jumlah_anggota': 4,
+            'status_rumah_tinggal': 'KONTRAK',
+            'status_pekerjaan': 'BURUH',
+            'pendapatan_gaji': 4000000,
+            'kondisi_rumah': 'SEDANG',
+            'kelurahan': 'PEKAYON JAYA'
+        }
+        
+        # Encode the example prediction data
+        for col, encoder in label_encoders.items():
+            if col in example_data:
+                example_data[col] = encoder.transform([example_data[col]])[0]
+        
+        new_data = pd.DataFrame([example_data])
+        
+        predicted_bansos = model.predict(new_data)
+        predicted_bansos_label = label_encoders['bansos'].inverse_transform(predicted_bansos)[0]
+        flash(f"IWAN SETIAWAN likely qualifies for bansos: {predicted_bansos_label}", 'info')
+
+        return render_template('assistance/assistance.html', table_data=df.to_dict('records'))
+    
+    return redirect(request.url)
